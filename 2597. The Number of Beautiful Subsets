@@ -1,0 +1,90 @@
+# Problem:
+You are given an array nums of positive integers and a positive integer k.
+A subset of nums is beautiful if it does not contain two integers with an absolute difference equal to k.
+Return the number of non-empty beautiful subsets of the array nums.
+A subset of nums is an array that can be obtained by deleting some (possibly none) elements from nums. Two subsets are different if and only if the chosen indices to delete are different.
+
+Example 1:
+Input: nums = [2,4,6], k = 2
+Output: 4
+Explanation: The beautiful subsets of the array nums are: [2], [4], [6], [2, 6].
+It can be proved that there are only 4 beautiful subsets in the array [2,4,6].
+
+Example 2:
+Input: nums = [1], k = 1
+Output: 1
+Explanation: The beautiful subset of the array nums is [1].
+It can be proved that there is only 1 beautiful subset in the array [1].
+ 
+Constraints:
+1 <= nums.length <= 20
+1 <= nums[i], k <= 1000
+
+
+# Solutions:
+## Iterative way of generating subsets
+class Solution {
+    private void subsets(int index, int[] nums, int k, List<List<Integer>> list){
+        list.add(new ArrayList<>());
+
+        for(int num : nums){
+            int n = list.size();
+            for(int i=0; i<n; i++){
+                List<Integer> curr = new ArrayList<>(list.get(i));
+                curr.add(num);
+                if(isBeautiful(curr,k)){
+                    list.add(curr);
+                }
+                else{
+                    curr.remove(curr.size()-1);
+                }
+               
+            }
+        }
+    }
+    private boolean isBeautiful(List<Integer> curr, int k){
+        for (int i = 0; i < curr.size(); i++) {
+            for (int j = i + 1; j < curr.size(); j++) {
+                if (Math.abs(curr.get(i) - curr.get(j)) == k) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public int beautifulSubsets(int[] nums, int k) {
+        List<List<Integer>> list = new ArrayList<>();
+        subsets(0, nums, k, list);
+        return list.size()-1;
+    }
+}
+## Recursive way of generating subsets
+
+## Optimized:
+
+class Solution {
+    private int countBeautifulSubsets(int[] nums, int k, int index, Map<Integer, Integer> freqMap) {
+        if (index == nums.length) {
+            return 1;
+        }
+        int count = countBeautifulSubsets(nums, k, index + 1, freqMap);       
+        boolean canInclude = true;
+        if (freqMap.containsKey(nums[index] - k) || freqMap.containsKey(nums[index] + k)) {
+            canInclude = false;
+        }
+        if (canInclude) {
+            freqMap.put(nums[index], freqMap.getOrDefault(nums[index], 0) + 1);
+            count += countBeautifulSubsets(nums, k, index + 1, freqMap);
+            freqMap.put(nums[index], freqMap.get(nums[index]) - 1);
+            if (freqMap.get(nums[index]) == 0) {
+                freqMap.remove(nums[index]);
+            }
+        }
+        return count;
+    }
+
+    public int beautifulSubsets(int[] nums, int k) {
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        return countBeautifulSubsets(nums, k, 0, freqMap) - 1; 
+    }
+}
