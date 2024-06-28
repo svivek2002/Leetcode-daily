@@ -20,6 +20,7 @@ edges[i].length == 2
 ui != vi
 The given edges represent a valid star graph.
 
+
 ## Solution:
 class Solution {
     public int findCenter(int[][] edges) {
