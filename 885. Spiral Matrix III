@@ -1,0 +1,63 @@
+## Problem:
+You start at the cell (rStart, cStart) of an rows x cols grid facing east. The northwest corner is at the first row and column in the grid, and the southeast corner is at the last row and column.
+
+You will walk in a clockwise spiral shape to visit every position in this grid. Whenever you move outside the grid's boundary, we continue our walk outside the grid (but may return to the grid boundary later.). Eventually, we reach all rows * cols spaces of the grid.
+
+Return an array of coordinates representing the positions of the grid in the order you visited them.
+
+ 
+
+Example 1:
+
+
+Input: rows = 1, cols = 4, rStart = 0, cStart = 0
+Output: [[0,0],[0,1],[0,2],[0,3]]
+Example 2:
+
+
+Input: rows = 5, cols = 6, rStart = 1, cStart = 4
+Output: [[1,4],[1,5],[2,5],[2,4],[2,3],[1,3],[0,3],[0,4],[0,5],[3,5],[3,4],[3,3],[3,2],[2,2],[1,2],[0,2],[4,5],[4,4],[4,3],[4,2],[4,1],[3,1],[2,1],[1,1],[0,1],[4,0],[3,0],[2,0],[1,0],[0,0]]
+ 
+
+Constraints:
+
+1 <= rows, cols <= 100
+0 <= rStart < rows
+0 <= cStart < cols
+
+## Solution:
+class Solution {
+    public int[][] spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        int[][] result = new int[rows * cols][2]; // Pre-allocate the result array
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // East, South, West, North
+        int step = 1; // Initial number of steps to take in the current direction
+        int dirIndex = 0; // Start with East direction
+        int totalCells = rows * cols;
+
+        int currentRow = rStart;
+        int currentCol = cStart;
+        result[0] = new int[]{currentRow, currentCol}; // Start point
+        int index = 1; // Index for filling result array
+
+        while (index < totalCells) {
+            // Perform steps in two directions before increasing the step count
+            for (int i = 0; i < 2; i++) { // Loop to cover two directions (East/West or North/South)
+                for (int j = 0; j < step; j++) {
+                    currentRow += directions[dirIndex][0];
+                    currentCol += directions[dirIndex][1];
+
+                    // Check if the position is within the grid bounds
+                    if (currentRow >= 0 && currentRow < rows && currentCol >= 0 && currentCol < cols) {
+                        result[index++] = new int[]{currentRow, currentCol};
+                    }
+                }
+                // Change direction after completing steps in current direction
+                dirIndex = (dirIndex + 1) % 4;
+            }
+            // Increment step count after completing a full cycle of two directions
+            step++;
+        }
+
+        return result;
+    }
+}
