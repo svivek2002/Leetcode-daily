@@ -1,0 +1,79 @@
+Given the root of a binary tree, return the postorder traversal of its nodes' values.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,null,2,3]
+Output: [3,2,1]
+Example 2:
+
+Input: root = []
+Output: []
+Example 3:
+
+Input: root = [1]
+Output: [1]
+ 
+
+Constraints:
+
+The number of the nodes in the tree is in the range [0, 100].
+-100 <= Node.val <= 100
+ 
+
+Follow up: Recursive solution is trivial, could you do it iteratively?
+
+## Solution:
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        postorderTraversal(root,list);
+        return list;
+    }
+    private void postorderTraversal(TreeNode node, List<Integer> list){
+        if(node == null){
+            return;
+        }
+        postorderTraversal(node.left, list);
+        postorderTraversal(node.right,list);
+        list.add(node.val);
+    }
+}
+
+// Iterative Approach
+public class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+
+        Stack<TreeNode> stack1 = new Stack<>();
+        Stack<TreeNode> stack2 = new Stack<>();
+
+        stack1.push(root);
+
+        // Process nodes in a manner similar to preorder traversal
+        while (!stack1.isEmpty()) {
+            TreeNode node = stack1.pop();
+            stack2.push(node);
+
+            // Push left and right children to stack1
+            if (node.left != null) {
+                stack1.push(node.left);
+            }
+            if (node.right != null) {
+                stack1.push(node.right);
+            }
+        }
+
+        // Extract nodes from stack2 to get them in postorder
+        while (!stack2.isEmpty()) {
+            result.add(stack2.pop().val);
+        }
+
+        return result;
+    }
+}
